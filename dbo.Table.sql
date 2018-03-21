@@ -1,4 +1,3 @@
-﻿
 CREATE TABLE [dbo].[tbl_users](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[lastname] [nchar](100) NULL,
