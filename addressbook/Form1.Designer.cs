@@ -75,6 +75,8 @@
             this.textLastname.Name = "textLastname";
             this.textLastname.Size = new System.Drawing.Size(235, 26);
             this.textLastname.TabIndex = 3;
+            this.textLastname.Text = "asd";
+            this.textLastname.TextChanged += new System.EventHandler(this.textLastname_TextChanged);
             // 
             // textFirstname
             // 
