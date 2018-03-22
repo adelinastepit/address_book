@@ -21,7 +21,7 @@ namespace addressbook
         {
             InitializeComponent();
             _sqlConn.ConnectionString = ConnectionString;
-            //DisplayData();
+            DisplayData();
         }
 
         private void DisplayData()
@@ -36,88 +36,120 @@ namespace addressbook
 
         private void ClearData()
         {
-            textLastname.Text = "";
-        }
+			textLastname.Text = "";
+			textFirstname.Text = "";
+			testMobile.Text = "";
+			textTelephone.Text = "";
+			textMail.Text = "";
+			ID = 0;
+		}
 
 
-        private void buttonQuitClick(object sender, EventArgs e)
-        {
-            //use MessageBox
-        }
+		private void buttonQuitClick(object sender, EventArgs e)
+		{
+			//use MessageBox
+			if (MessageBox.Show("Do you want to exit?", "My Application",
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+				== DialogResult.Yes)
+			{
+				Application.Exit();
+			}
+			else
+			{
+				textLastname.Focus();
+			}
+		}
 
         private void buttonAboutClick(object sender, EventArgs e)
         {
-            //use MessageBox
-        }
+			MessageBox.Show("Mail Address Database", "About This Program", MessageBoxButtons.OK,
+				MessageBoxIcon.Information);
+			textLastname.Focus();
+		}
 
         private void buttonSaveClick(object sender, EventArgs e)
         {
-            //build Sql Command with parameters
-            //use insert query
-            //todo add condition
-            //todo open connection
-            _sqlConn.Open();
+			//build Sql Command with parameters
+			if (textLastname.Text != "" && textFirstname.Text != ""
+			   && testMobile.Text != ""
+			   && textTelephone.Text != "" && textMail.Text != "")
+			{
+				_sqlConn.Open();
 
-            SqlCommand sqlCommand = new SqlCommand("INSERT INTO tbl_users (lastname,firstname, mobile,telephone, email) " +
-                "VALUES (@lastname, @firstname, @mobile, @telephone, @email);");
-            sqlCommand.Connection = _sqlConn;
+				SqlCommand sqlCommand = new SqlCommand("INSERT INTO tbl_users (lastname,firstname, mobile,telephone, email) " +
+					"VALUES (@lastname, @firstname, @mobile, @telephone, @email);");
+				sqlCommand.Connection = _sqlConn;
 
-            sqlCommand.Parameters.Add("@lastname", SqlDbType.NChar);
-            sqlCommand.Parameters["@lastname"].Value = textLastname.Text;
+				sqlCommand.Parameters.Add("@lastname", SqlDbType.NChar);
+				sqlCommand.Parameters["@lastname"].Value = textLastname.Text;
 
-            sqlCommand.Parameters.Add("@firstname", SqlDbType.NChar);
-            sqlCommand.Parameters["@firstname"].Value = textFirstname.Text;
+				sqlCommand.Parameters.Add("@firstname", SqlDbType.NChar);
+				sqlCommand.Parameters["@firstname"].Value = textFirstname.Text;
 
-            sqlCommand.Parameters.Add("@mobile", SqlDbType.NChar);
-            sqlCommand.Parameters["@mobile"].Value = testMobile.Text;
+				sqlCommand.Parameters.Add("@mobile", SqlDbType.NChar);
+				sqlCommand.Parameters["@mobile"].Value = testMobile.Text;
 
-            sqlCommand.Parameters.Add("@telephone", SqlDbType.NChar);
-            sqlCommand.Parameters["@telephone"].Value = textTelephone.Text;
+				sqlCommand.Parameters.Add("@telephone", SqlDbType.NChar);
+				sqlCommand.Parameters["@telephone"].Value = textTelephone.Text;
 
-            sqlCommand.Parameters.Add("@email", SqlDbType.NChar);
-            sqlCommand.Parameters["@email"].Value = textMail.Text;
+				sqlCommand.Parameters.Add("@email", SqlDbType.NChar);
+				sqlCommand.Parameters["@email"].Value = textMail.Text;
 
 
-            sqlCommand.ExecuteNonQuery();
+				sqlCommand.ExecuteNonQuery();
 
-            _sqlConn.Close();
+				_sqlConn.Close();
 
-            MessageBox.Show("Record Inserted Successfully");
+				MessageBox.Show("Record Inserted Successfully");
 
-            DisplayData();
-            //close conn
-        }
+				DisplayData();
+				ClearData();
+			}
+			else
+			{
+				MessageBox.Show("Please Provide Details!");
+			}
+			//close conn
+		}
 
         private void buttonUpdateClick(object sender, EventArgs e)
         {
-            //build Sql Command with parameters
-            //use update query
-            _sqlConn.Open();
-			//todo add rest of fields
-			SqlCommand sqlCommand = new SqlCommand("update tbl_users set lastname=@lastname, firstname=@firstname");
+			if (textLastname.Text != "" && textFirstname.Text != ""
+							&& testMobile.Text != ""
+							&& textTelephone.Text != "" && textMail.Text != "")
+			{
+				_sqlConn.Open();
 
-			sqlCommand.Connection = _sqlConn;
+				SqlCommand sqlCommand = new SqlCommand("UPDATE tbl_users SET lastname=@lastname, firstname=@firstname,address=@address,mobile=@mobile,telephone=@telephone,email=@email WHERE id=@id", _sqlConn);
 
-            sqlCommand.Parameters.Add("@lastname", SqlDbType.NChar);
-            sqlCommand.Parameters["@lastname"].Value = textLastname.Text;
+				sqlCommand.Connection = _sqlConn;
 
-            sqlCommand.Parameters.Add("@firstname", SqlDbType.NChar);
-            sqlCommand.Parameters["@firstname"].Value = textFirstname.Text;
+				sqlCommand.Parameters.Add("@lastname", SqlDbType.NChar);
+				sqlCommand.Parameters["@lastname"].Value = textLastname.Text;
 
-            sqlCommand.Parameters.Add("@mobile", SqlDbType.NChar);
-            sqlCommand.Parameters["@mobile"].Value = testMobile.Text;
+				sqlCommand.Parameters.Add("@firstname", SqlDbType.NChar);
+				sqlCommand.Parameters["@firstname"].Value = textFirstname.Text;
 
-            sqlCommand.Parameters.Add("@telephone", SqlDbType.NChar);
-            sqlCommand.Parameters["@telephone"].Value = textTelephone.Text;
+				sqlCommand.Parameters.Add("@mobile", SqlDbType.NChar);
+				sqlCommand.Parameters["@mobile"].Value = testMobile.Text;
 
-            sqlCommand.Parameters.Add("@email", SqlDbType.NChar);
-            sqlCommand.Parameters["@email"].Value = textMail.Text;
+				sqlCommand.Parameters.Add("@telephone", SqlDbType.NChar);
+				sqlCommand.Parameters["@telephone"].Value = textTelephone.Text;
 
-            sqlCommand.ExecuteNonQuery();
+				sqlCommand.Parameters.Add("@email", SqlDbType.NChar);
+				sqlCommand.Parameters["@email"].Value = textMail.Text;
 
-            _sqlConn.Close();
+				sqlCommand.ExecuteNonQuery();
 
-            DisplayData();
+				_sqlConn.Close();
+
+				DisplayData();
+				ClearData();
+			}
+			else
+			{
+				MessageBox.Show("Please Provide Details!");
+			}
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -142,17 +174,24 @@ namespace addressbook
 
         private void buttonDeleteClick(object sender, EventArgs e)
         {
-			_sqlConn.Open();
+			if (ID != 0)
+			{
+				_sqlConn.Open();
 
-			SqlCommand sqlCommand = new SqlCommand("delete tbl_users where id=@id");
-			sqlCommand.Parameters.Add("@id", SqlDbType.Int);
-			sqlCommand.Parameters["@id"].Value = ID;
-			sqlCommand.Connection = _sqlConn;
-			sqlCommand.ExecuteNonQuery();
+				SqlCommand sqlCommand = new SqlCommand("delete tbl_users where id=@id");
+				sqlCommand.Parameters.Add("@id", SqlDbType.Int);
+				sqlCommand.Parameters["@id"].Value = ID;
+				sqlCommand.Connection = _sqlConn;
+				sqlCommand.ExecuteNonQuery();
 
-			_sqlConn.Close();
+				_sqlConn.Close();
 
-			DisplayData();
+				DisplayData();
+			}
+			else
+			{
+				MessageBox.Show("Please Select Record to Delete");
+			}
 		}
     }
 }
